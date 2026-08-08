@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="48" viewBox="0 0 240 48" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#06b6d4" />
+      <stop offset="1" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect width="240" height="48" rx="8" fill="transparent" />
+  <text x="16" y="34" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e6eef6">Endoholic</text>
+  <g transform="translate(180,8)">
+    <path d="M16 0c4 0 8 4 8 8s-4 8-8 8-8-4-8-8 4-8 8-8z" fill="#06b6d4" opacity="0.95" />
+    <path d="M8 4c2 0 4 2 4 4s-2 4-4 4-4-2-4-4 2-4 4-4z" fill="#fff" opacity="0.9" />
+  </g>
+</svg>
