@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { SubscriptionProvider } from "./context/SubscriptionContext";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
+import PaymentModal from "./components/PaymentModal";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
@@ -31,7 +35,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SubscriptionProvider>
+          <div className="min-h-screen flex flex-col">
+            <SiteHeader />
+            <main className="flex-1 flex flex-col">{children}</main>
+            <SiteFooter />
+          </div>
+          <PaymentModal />
+        </SubscriptionProvider>
+      </body>
     </html>
   );
 }

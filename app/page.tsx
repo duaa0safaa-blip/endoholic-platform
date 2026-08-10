@@ -2,39 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { useSubscription } from './context/SubscriptionContext';
 
 // Load the client-only PdfViewer component (which itself dynamically imports react-pdf)
 const PdfViewer = dynamic(() => import('./reader/PdfViewer'), { ssr: false });
 
 export default function BookReader() {
+  const { isSubscribed, setShowPaymentModal } = useSubscription();
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
-  const [paymentMethod, setPaymentMethod] = useState<'iq' | 'int'>('iq');
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
 
-  // Persist subscription in localStorage so access survives refresh
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('endoholic:isSubscribed');
-      if (stored === 'true') setIsSubscribed(true);
-    } catch (e) {
-      // ignore (SSR safety)
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      if (isSubscribed) localStorage.setItem('endoholic:isSubscribed','true');
-      else localStorage.removeItem('endoholic:isSubscribed');
-    } catch (e) {}
-  }, [isSubscribed]);
-  
   const samplePdf = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
-  
+
   const [pdfFile] = useState<string | File>(samplePdf);
   const [fileName] = useState<string>('Endodontics Safe Instrumentation (Sample Preview).pdf');
-
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,52 +45,12 @@ export default function BookReader() {
   }, [isSubscribed, pageNumber]);
 
   return (
-    <div 
-      className="min-h-screen text-slate-100 flex flex-col justify-between select-none font-sans relative bg-cover bg-center bg-no-repeat bg-fixed"
+    <div
+      className="flex-1 flex flex-col text-slate-100 select-none relative bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: "url('/bg-platform.jpg')" }}
       onContextMenu={(e) => e.preventDefault()}
     >
       <div className="absolute inset-0 bg-black/20 pointer-events-none z-0"></div>
-
-      <header className="w-full flex flex-wrap items-center justify-between gap-3 py-3 px-4 sm:px-6 bg-slate-900/60 backdrop-blur-md border-b border-white/10 shadow-xl z-20 sticky top-0">
-        <a href="/" aria-label="Endoholic home" className="flex items-center gap-3 shrink-0">
-          <img src="/logo.svg" alt="Endoholic logo" className="w-24 sm:w-28 h-auto" />
-          <div className="hidden sm:block leading-tight">
-            <h1 className="text-lg font-bold text-white drop-shadow">Endoholic Platform</h1>
-            <p className="text-[10px] text-teal-200">Digital Dentistry & Endodontics Learning</p>
-          </div>
-        </a>
-
-        <nav aria-label="Primary" className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
-          <div className="flex items-center gap-4">
-            <a href="/about" className="text-slate-200 hover:text-white text-sm">About</a>
-            <a href="/pricing" className="text-slate-200 hover:text-white text-sm">Pricing</a>
-            <a href="/contact" className="text-slate-200 hover:text-white text-sm">Contact</a>
-          </div>
-
-          {isSubscribed ? (
-            <span className="text-xs bg-teal-950/80 border border-teal-500 text-teal-300 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shadow">
-              <span aria-hidden>✨</span>
-              <span className="sr-only">You have an active subscription</span>
-              Active Subscription (Pro)
-            </span>
-          ) : (
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              aria-label="Unlock full access"
-              className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-xs px-4 py-2 rounded-xl font-bold transition-all shadow-lg focus:ring-2 focus:ring-amber-300"
-            >
-              Unlock Full Access
-              <span className="ml-2" aria-hidden>💳</span>
-            </button>
-          )}
-
-          <span className="hidden sm:flex text-xs bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 px-3 py-1 rounded-full items-center gap-1.5 shadow">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden></span>
-            DRM Protected
-          </span>
-        </nav>
-      </header>
 
       <section className="w-full max-w-7xl mx-auto px-4 py-6 z-10 hidden md:block">
         <div className="bg-slate-900/60 border border-white/6 rounded-2xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-center gap-4 sm:gap-6">
@@ -123,7 +64,7 @@ export default function BookReader() {
           </div>
 
           <div className="w-full md:w-96 bg-white/5 p-3 sm:p-4 rounded-lg">
-            <div className="text-xs sm:text-sm text-slate-300">Trusted by</div>
+            <div className="text-xs sm:text-sm text-slate-300">Built for</div>
             <div className="mt-3 flex flex-wrap gap-2 items-center">
               <div className="bg-slate-800/50 px-2 sm:px-3 py-1 sm:py-2 rounded text-xs">University Clinics</div>
               <div className="bg-slate-800/50 px-2 sm:px-3 py-1 sm:py-2 rounded text-xs">Specialist Practices</div>
@@ -134,9 +75,9 @@ export default function BookReader() {
       </section>
 
       <div className="flex-1 flex flex-col w-full px-2 sm:px-4 py-4 sm:py-6 gap-4 z-10 justify-center items-center">
-        
+
         <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-3 sm:p-4 shadow-2xl w-full max-w-2xl">
-          
+
           <div className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2 mb-3 flex items-center justify-between text-xs text-slate-300 z-10">
             <span>Book: <strong className="text-teal-300">{fileName}</strong></span>
             <span className="text-amber-300 font-medium">
@@ -163,7 +104,7 @@ export default function BookReader() {
             <div className="absolute inset-x-4 bottom-20 bg-slate-950/95 border border-amber-500/50 p-4 rounded-2xl text-center z-30 backdrop-blur-xl shadow-2xl animate-bounce">
               <p className="text-sm font-bold text-amber-300 mb-1">🔒 هذه الصفحة مدفوعة ومقفلة</p>
               <p className="text-xs text-slate-300 mb-3">لقد وصلت إلى نهاية النسخة التجريبية (Sample). يرجى إتمام الاشتراك لقراءة الكتاب كاملاً.</p>
-              <button 
+              <button
                 onClick={() => setShowPaymentModal(true)}
                 className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-2 rounded-xl shadow cursor-pointer"
               >
@@ -201,88 +142,6 @@ export default function BookReader() {
           </div>
         </div>
       </div>
-
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900/90 border border-white/20 rounded-2xl p-6 max-w-lg w-full text-white shadow-2xl relative">
-            <h2 className="text-xl font-bold text-teal-400 mb-2">تفعيل اشتراك منصة Endoholic</h2>
-            <p className="text-xs text-slate-300 mb-6">اختر طريقة الدفع للحصول على الوصول الكامل للكتب والمقالات العلمية.</p>
-
-            <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-6">
-              <button
-                onClick={() => setPaymentMethod('iq')}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  paymentMethod === 'iq' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                داخل العراق 🇮🇶 (زين كاش)
-              </button>
-              <button
-                onClick={() => setPaymentMethod('int')}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  paymentMethod === 'int' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                دولي 🌍 (فيزا / ماستر)
-              </button>
-            </div>
-
-            {paymentMethod === 'iq' ? (
-              <div className="space-y-4">
-                <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
-                  <p className="text-xs text-slate-400">حول رسوم الاشتراك إلى محفظة زين كاش:</p>
-                  <p className="text-lg font-mono font-bold text-teal-300 my-1">07732746321</p>
-                </div>
-                <div>
-                  بعد التحويل، أرسلي صورة الوصل عبر صفحة{' '}
-                  <a href="/contact" className="text-teal-300 underline hover:text-teal-200">تواصل معنا</a>
-                  {' '}وسيتم تفعيل حسابك يدوياً خلال وقت قصير.
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4 text-center py-4">
-                <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-                  <p className="text-sm font-medium mb-1">الدفع بالبطاقة (فيزا / ماستركارد)</p>
-                  <p className="text-xs text-slate-400">
-                    الدفع الإلكتروني المباشر قيد التفعيل حالياً. تواصلي معنا عبر{' '}
-                    <a href="/contact" className="text-teal-300 underline hover:text-teal-200">صفحة التواصل</a>
-                    {' '}وسنرسل لكِ رابط دفع آمن فور توفره.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div className="flex gap-3 pt-6 mt-4 border-t border-slate-800">
-              <button
-                onClick={() => setShowPaymentModal(false)}
-                className="flex-1 px-5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer py-2.5"
-              >
-                إغلاق
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <footer className="text-xs text-slate-200 text-center py-4 z-10 bg-slate-900/60 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md bg-teal-500/20 flex items-center justify-center text-teal-300 font-bold">E</div>
-            <div>
-              <div className="font-semibold">Endoholic Platform</div>
-              <div className="text-[11px] text-slate-300">Digital Dentistry & Endodontics</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 text-slate-300">
-            <a href="/about" className="hover:text-white text-xs">About</a>
-            <a href="/pricing" className="hover:text-white text-xs">Pricing</a>
-            <a href="/contact" className="hover:text-white text-xs">Contact</a>
-          </div>
-
-          <div className="text-slate-400 text-[11px]">© 2026 Endoholic Platform. All rights reserved.</div>
-        </div>
-      </footer>
     </div>
   );
 }
