@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 // Load the client-only PdfViewer component (which itself dynamically imports react-pdf)
@@ -11,8 +11,6 @@ export default function BookReader() {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<'iq' | 'int'>('iq');
-  const [activeTab, setActiveTab] = useState<string>('books');
-  
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
 
   // Persist subscription in localStorage so access survives refresh
@@ -34,8 +32,8 @@ export default function BookReader() {
   
   const samplePdf = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
   
-  const [pdfFile, setPdfFile] = useState<string | File>(samplePdf);
-  const [fileName, setFileName] = useState<string>('Endodontics Safe Instrumentation (Sample Preview).pdf');
+  const [pdfFile] = useState<string | File>(samplePdf);
+  const [fileName] = useState<string>('Endodontics Safe Instrumentation (Sample Preview).pdf');
 
 
   useEffect(() => {
@@ -73,26 +71,21 @@ export default function BookReader() {
     >
       <div className="absolute inset-0 bg-black/20 pointer-events-none z-0"></div>
 
-      <header className="w-full flex justify-between items-center py-3 px-6 bg-slate-900/60 backdrop-blur-md border-b border-white/10 shadow-xl z-20 sticky top-0">
-        <div className="flex items-center gap-3">
-          <a href="/" aria-label="Endoholic home" className="flex items-center gap-3">
-            <img src="/logo.svg" alt="Endoholic logo" className="w-28 h-auto" />
-          </a>
-        </div>
-          <div className="flex items-center gap-3">
-          <div aria-hidden="true" className="w-10 h-10 rounded-xl bg-teal-500/30 border border-teal-400/50 flex items-center justify-center text-teal-300 font-extrabold text-xl shadow-inner">
-            E
-          </div>
-          <div>
+      <header className="w-full flex flex-wrap items-center justify-between gap-3 py-3 px-4 sm:px-6 bg-slate-900/60 backdrop-blur-md border-b border-white/10 shadow-xl z-20 sticky top-0">
+        <a href="/" aria-label="Endoholic home" className="flex items-center gap-3 shrink-0">
+          <img src="/logo.svg" alt="Endoholic logo" className="w-24 sm:w-28 h-auto" />
+          <div className="hidden sm:block leading-tight">
             <h1 className="text-lg font-bold text-white drop-shadow">Endoholic Platform</h1>
             <p className="text-[10px] text-teal-200">Digital Dentistry & Endodontics Learning</p>
           </div>
-        </div>
+        </a>
 
-        <nav aria-label="Primary" className="flex items-center gap-4">
-          <a href="/about" className="text-slate-200 hover:text-white text-sm">About</a>
-          <a href="/pricing" className="text-slate-200 hover:text-white text-sm">Pricing</a>
-          <a href="/contact" className="text-slate-200 hover:text-white text-sm">Contact</a>
+        <nav aria-label="Primary" className="flex flex-wrap items-center justify-end gap-3 sm:gap-4">
+          <div className="flex items-center gap-4">
+            <a href="/about" className="text-slate-200 hover:text-white text-sm">About</a>
+            <a href="/pricing" className="text-slate-200 hover:text-white text-sm">Pricing</a>
+            <a href="/contact" className="text-slate-200 hover:text-white text-sm">Contact</a>
+          </div>
 
           {isSubscribed ? (
             <span className="text-xs bg-teal-950/80 border border-teal-500 text-teal-300 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shadow">
@@ -111,74 +104,38 @@ export default function BookReader() {
             </button>
           )}
 
-          <span className="text-xs bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 px-3 py-1 rounded-full flex items-center gap-1.5 shadow">
+          <span className="hidden sm:flex text-xs bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 px-3 py-1 rounded-full items-center gap-1.5 shadow">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden></span>
             DRM Protected
           </span>
         </nav>
       </header>
 
-      <section className="w-full max-w-7xl mx-auto px-4 py-8 z-10">
-        <div className="bg-slate-900/60 border border-white/6 rounded-2xl p-8 shadow-soft flex flex-col md:flex-row items-center gap-6">
+      <section className="w-full max-w-7xl mx-auto px-4 py-6 z-10 hidden md:block">
+        <div className="bg-slate-900/60 border border-white/6 rounded-2xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-center gap-4 sm:gap-6">
           <div className="flex-1">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white">Endodontics education for clinicians and students</h2>
-            <p className="text-slate-300 mt-3 max-w-2xl">Practical courses, peer-reviewed resources, and a curated library designed to help you deliver better endodontic care. Learn from specialists and improve clinical outcomes.</p>
-            <div className="mt-6 flex gap-3">
-              <a href="/pricing" className="inline-block bg-brand-500 hover:bg-brand-700 text-slate-900 font-semibold px-5 py-3 rounded-lg">Get Started</a>
-              <a href="/about" className="inline-block text-slate-200 px-4 py-3 rounded-lg border border-white/10">Learn more</a>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">Endodontics education for clinicians and students</h2>
+            <p className="text-slate-300 mt-2 sm:mt-3 max-w-2xl text-sm sm:text-base">Practical courses, peer-reviewed resources, and a curated library designed to help you deliver better endodontic care.</p>
+            <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
+              <a href="/pricing" className="inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold px-4 sm:px-5 py-2 sm:py-3 rounded-lg text-sm">Get Started</a>
+              <a href="/about" className="inline-block text-slate-200 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-white/10 text-sm">Learn more</a>
             </div>
           </div>
 
-          <div className="w-full md:w-96 bg-white/5 p-4 rounded-lg">
-            <div className="text-sm text-slate-300">Trusted by</div>
-            <div className="mt-4 flex gap-3 items-center">
-              <div className="bg-slate-800/50 px-3 py-2 rounded">University Clinics</div>
-              <div className="bg-slate-800/50 px-3 py-2 rounded">Specialist Practices</div>
-              <div className="bg-slate-800/50 px-3 py-2 rounded">Residents</div>
+          <div className="w-full md:w-96 bg-white/5 p-3 sm:p-4 rounded-lg">
+            <div className="text-xs sm:text-sm text-slate-300">Trusted by</div>
+            <div className="mt-3 flex flex-wrap gap-2 items-center">
+              <div className="bg-slate-800/50 px-2 sm:px-3 py-1 sm:py-2 rounded text-xs">University Clinics</div>
+              <div className="bg-slate-800/50 px-2 sm:px-3 py-1 sm:py-2 rounded text-xs">Specialist Practices</div>
+              <div className="bg-slate-800/50 px-2 sm:px-3 py-1 sm:py-2 rounded text-xs">Residents</div>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto p-4 gap-6 z-10 items-start">
+      <div className="flex-1 flex flex-col w-full px-2 sm:px-4 py-4 sm:py-6 gap-4 z-10 justify-center items-center">
         
-        <aside className="w-full md:w-64 bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
-          <p className="text-xs font-bold text-teal-300 px-3 py-1 uppercase tracking-wider border-b border-white/10 mb-1">
-            Platform Menu
-          </p>
-
-          <button 
-            onClick={() => setActiveTab('books')}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'books' ? 'bg-teal-600/80 text-white shadow-lg border border-teal-400/30' : 'text-slate-200 hover:bg-white/10'
-            }`}
-          >
-            <span>📚</span>
-            <span>Books & E-Kits</span>
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('videos')}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'videos' ? 'bg-teal-600/80 text-white shadow-lg border border-teal-400/30' : 'text-slate-200 hover:bg-white/10'
-            }`}
-          >
-            <span>🎥</span>
-            <span>Video Lectures</span>
-          </button>
-
-          <button 
-            onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'profile' ? 'bg-teal-600/80 text-white shadow-lg border border-teal-400/30' : 'text-slate-200 hover:bg-white/10'
-            }`}
-          >
-            <span>👤</span>
-            <span>Account & Subscriptions</span>
-          </button>
-        </aside>
-
-        <main className="flex-1 w-full bg-slate-900/40 backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col items-center border border-white/20 min-h-[600px]">
+        <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-3 sm:p-4 shadow-2xl w-full max-w-2xl">
           
           <div className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2 mb-3 flex items-center justify-between text-xs text-slate-300 z-10">
             <span>Book: <strong className="text-teal-300">{fileName}</strong></span>
@@ -242,7 +199,7 @@ export default function BookReader() {
               Next
             </button>
           </div>
-        </main>
+        </div>
       </div>
 
       {showPaymentModal && (
@@ -277,41 +234,28 @@ export default function BookReader() {
                   <p className="text-lg font-mono font-bold text-teal-300 my-1">0780XXXXXXX</p>
                 </div>
                 <div>
-                  يتم التحويل وإرسال الوصل للمراجعة لتفعيل حسابك فوراً.
+                  بعد التحويل، أرسلي صورة الوصل عبر صفحة{' '}
+                  <a href="/contact" className="text-teal-300 underline hover:text-teal-200">تواصل معنا</a>
+                  {' '}وسيتم تفعيل حسابك يدوياً خلال وقت قصير.
                 </div>
               </div>
             ) : (
               <div className="space-y-4 text-center py-4">
                 <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-                  <p className="text-sm font-medium mb-1">الدفع الإلكتروني السريع</p>
-                  <button 
-                    onClick={() => {
-                      setIsSubscribed(true);
-                      setShowPaymentModal(false);
-                      alert('تم محاكاة الدفع بنجاح! أهلاً بكِ، تم فتح الكتاب كاملاً.');
-                    }}
-                    className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition-all text-sm cursor-pointer mt-2"
-                  >
-                    إتمام الدفع التجريبي (محاكاة التفعيل الفوري) 💳
-                  </button>
+                  <p className="text-sm font-medium mb-1">الدفع بالبطاقة (فيزا / ماستركارد)</p>
+                  <p className="text-xs text-slate-400">
+                    الدفع الإلكتروني المباشر قيد التفعيل حالياً. تواصلي معنا عبر{' '}
+                    <a href="/contact" className="text-teal-300 underline hover:text-teal-200">صفحة التواصل</a>
+                    {' '}وسنرسل لكِ رابط دفع آمن فور توفره.
+                  </p>
                 </div>
               </div>
             )}
 
             <div className="flex gap-3 pt-6 mt-4 border-t border-slate-800">
-              <button 
-                onClick={() => {
-                  setIsSubscribed(true);
-                  setShowPaymentModal(false);
-                  alert('تم تفعيل الاشتراك يدوياً بنجاح!');
-                }}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-              >
-                محاكاة تفعيل المشرف (Admin Activation)
-              </button>
-              <button 
+              <button
                 onClick={() => setShowPaymentModal(false)}
-                className="px-5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer"
+                className="flex-1 px-5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-slate-400 cursor-pointer py-2.5"
               >
                 إغلاق
               </button>

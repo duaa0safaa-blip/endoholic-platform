@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 type Props = {
   file: string | File;
@@ -37,7 +37,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
     (async () => {
       try {
         if (typeof file === 'string') {
-          const res = await fetch(file, { credentials: 'include' });
+          const res = await fetch(file);
           const ab = await res.arrayBuffer();
           if (mounted) setFileData(ab);
         } else if (file instanceof File) {
@@ -88,6 +88,14 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
     };
   }, []);
 
+  // Memoize the file prop: react-pdf/pdf.js transfers (detaches) the ArrayBuffer
+  // to its worker on load, so a fresh { data: fileData } object literal on every
+  // render would make it try to reload an already-detached buffer and crash.
+  const fileProp = useMemo(
+    () => (fileData ? { data: fileData } : undefined),
+    [fileData]
+  );
+
   if (!PDFComponents) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-slate-800 gap-3 w-full">
@@ -112,7 +120,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
 
       <div className="w-full">
         <Document
-          file={fileData ? { data: fileData } : undefined}
+          file={fileProp}
           onLoadSuccess={onLoadSuccess}
           loading={
             <div className="flex flex-col items-center justify-center p-12 text-slate-800 gap-3 w-full">

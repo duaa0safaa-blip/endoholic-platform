@@ -13,8 +13,7 @@ export default function ContactPage(){
 
       <div className="bg-slate-800/60 p-6 rounded-xl shadow-soft">
         <h2 className="text-lg font-semibold text-white">General Inquiries</h2>
-        <p className="text-slate-300 text-sm">Email: <a className="text-brand-500 hover:underline" href="mailto:hello@endoholic.example">hello@endoholic.example</a></p>
-        <p className="text-slate-300 text-sm mt-2">Phone: +1 (555) 123-4567</p>
+        <p className="text-slate-300 text-sm">Email: <a className="text-brand-500 hover:underline" href="mailto:duaa0safaa@gmail.com">duaa0safaa@gmail.com</a></p>
       </div>
 
       <ContactForm />
