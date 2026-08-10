@@ -231,7 +231,7 @@ export default function BookReader() {
               <div className="space-y-4">
                 <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
                   <p className="text-xs text-slate-400">حول رسوم الاشتراك إلى محفظة زين كاش:</p>
-                  <p className="text-lg font-mono font-bold text-teal-300 my-1">0780XXXXXXX</p>
+                  <p className="text-lg font-mono font-bold text-teal-300 my-1">07732746321</p>
                 </div>
                 <div>
                   بعد التحويل، أرسلي صورة الوصل عبر صفحة{' '}
