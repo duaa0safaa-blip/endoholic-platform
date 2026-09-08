@@ -2,6 +2,13 @@
 
 import { useSubscription } from '../context/SubscriptionContext';
 
+const WHATSAPP_NUMBER = '9647732746321';
+
+function whatsappPayLink(methodLabel: string) {
+  const message = `مرحباً، أرغب بتفعيل اشتراك منصة Endoholic. سأقوم بالدفع عبر ${methodLabel}.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
 export default function PaymentModal() {
   const { showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod } = useSubscription();
 
@@ -20,7 +27,7 @@ export default function PaymentModal() {
               paymentMethod === 'iq' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            داخل العراق 🇮🇶 (زين كاش)
+            زين كاش 🇮🇶
           </button>
           <button
             onClick={() => setPaymentMethod('int')}
@@ -28,32 +35,47 @@ export default function PaymentModal() {
               paymentMethod === 'int' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            دولي 🌍 (فيزا / ماستر)
+            💳 Switch Card 🌍
           </button>
         </div>
 
         {paymentMethod === 'iq' ? (
           <div className="space-y-4">
+            <p className="text-[11px] text-amber-300/90 text-center font-semibold">للعملاء داخل العراق 🇮🇶</p>
             <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
-              <p className="text-xs text-slate-400">حول رسوم الاشتراك إلى محفظة زين كاش:</p>
+              <p className="text-xs text-slate-400">رقم محفظة زين كاش:</p>
               <p className="text-lg font-mono font-bold text-teal-300 my-1">07732746321</p>
             </div>
-            <div>
-              بعد التحويل، أرسلي صورة الوصل عبر صفحة{' '}
-              <a href="/contact" className="text-teal-300 underline hover:text-teal-200">تواصل معنا</a>
-              {' '}وسيتم تفعيل حسابك يدوياً خلال وقت قصير.
-            </div>
+            <a
+              href={whatsappPayLink('زين كاش')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-teal-600 hover:bg-teal-500 rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all"
+            >
+              ادفع الآن عبر زين كاش 💸
+            </a>
+            <p className="text-[11px] text-slate-500 text-center leading-relaxed">
+              يفتح واتساب مباشرة لإرسال إشعار الدفع وتفعيل الاشتراك فوراً.
+            </p>
           </div>
         ) : (
-          <div className="space-y-4 text-center py-4">
-            <div className="p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-              <p className="text-sm font-medium mb-1">الدفع بالبطاقة (فيزا / ماستركارد)</p>
-              <p className="text-xs text-slate-400">
-                الدفع الإلكتروني المباشر قيد التفعيل حالياً. تواصلي معنا عبر{' '}
-                <a href="/contact" className="text-teal-300 underline hover:text-teal-200">صفحة التواصل</a>
-                {' '}وسنرسل لكِ رابط دفع آمن فور توفره.
-              </p>
+          <div className="space-y-4">
+            <p className="text-[11px] text-amber-300/90 text-center font-semibold">للعملاء الدوليين 🌍</p>
+            <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
+              <p className="text-xs text-slate-400">رقم حساب Switch Card:</p>
+              <p className="text-lg font-mono font-bold text-teal-300 my-1 break-all">0000001A00679084325309</p>
             </div>
+            <a
+              href={whatsappPayLink('Switch Card')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-teal-600 hover:bg-teal-500 rounded-xl py-3.5 text-sm font-bold text-white shadow-lg transition-all"
+            >
+              ادفع الآن عبر Switch Card 💳
+            </a>
+            <p className="text-[11px] text-slate-500 text-center leading-relaxed">
+              يفتح واتساب مباشرة لإرسال إشعار الدفع وتفعيل الاشتراك فوراً.
+            </p>
           </div>
         )}
 

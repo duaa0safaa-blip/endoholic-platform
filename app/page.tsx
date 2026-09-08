@@ -12,7 +12,9 @@ export default function BookReader() {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
-  const samplePdf = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
+  // Served through our own cached proxy (see app/api/book/route.ts) instead of
+  // hitting GitHub directly from every visitor's browser.
+  const samplePdf = '/api/book';
 
   const [pdfFile] = useState<string | File>(samplePdf);
   const [fileName] = useState<string>('Endodontics Safe Instrumentation (Sample Preview).pdf');
