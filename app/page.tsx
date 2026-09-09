@@ -14,7 +14,9 @@ export default function BookReader() {
 
   // Served through our own cached proxy (see app/api/book/route.ts) instead of
   // hitting GitHub directly from every visitor's browser.
-  const samplePdf = accessToken ? `/api/download?token=${encodeURIComponent(accessToken)}` : '/api/book';
+  const samplePdf = isSubscribed && accessToken
+    ? `/api/download?token=${encodeURIComponent(accessToken)}`
+    : '/api/book';
 
   const pdfFile = samplePdf;
   const [fileName] = useState<string>('Safe Instrumentation in Endodontics.pdf');

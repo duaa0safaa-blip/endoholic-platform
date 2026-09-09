@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 type Props = {
   file: string | File;
@@ -11,8 +11,14 @@ type Props = {
 
 export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }: Props) {
   const [PDFComponents, setPDFComponents] = useState<any>(null);
-  const [fileData, setFileData] = useState<ArrayBuffer | null>(null);
-  const [watermark, setWatermark] = useState<string>('');
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [watermark] = useState<string>(() => {
+    const ts = new Date().toLocaleString();
+    const ua = typeof navigator !== 'undefined'
+      ? navigator.userAgent.split(' ').slice(0, 3).join(' ')
+      : 'web';
+    return `Endoholic — ${ts} — ${ua}`;
+  });
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Dynamically load react-pdf (client-only) and configure worker
@@ -31,36 +37,30 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
     return () => { mounted = false; };
   }, []);
 
-  // Fetch the PDF as ArrayBuffer so the URL is not directly exposed
+  // Use a Blob URL so react-pdf cannot detach a reusable ArrayBuffer.
   useEffect(() => {
     let mounted = true;
+    let objectUrl: string | null = null;
     (async () => {
       try {
         if (typeof file === 'string') {
           const res = await fetch(file);
-          const ab = await res.arrayBuffer();
-          if (mounted) setFileData(ab);
+          if (!res.ok) throw new Error(`PDF request failed with ${res.status}`);
+          objectUrl = URL.createObjectURL(await res.blob());
+          if (mounted) setFileUrl(objectUrl);
         } else if (file instanceof File) {
-          const ab = await file.arrayBuffer();
-          if (mounted) setFileData(ab);
+          objectUrl = URL.createObjectURL(file);
+          if (mounted) setFileUrl(objectUrl);
         }
       } catch (err) {
         console.error('Failed to fetch PDF file into memory', err);
       }
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [file]);
-
-  // Build a dynamic watermark (timestamp + short UA fragment) to discourage screenshots
-  useEffect(() => {
-    try {
-      const ts = new Date().toLocaleString();
-      const ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent.split(' ').slice(0,3).join(' ') : 'web';
-      setWatermark(`Endoholic — ${ts} — ${ua}`);
-    } catch (e) {
-      setWatermark('Endoholic');
-    }
-  }, []);
 
   // Prevent copy, selection and common shortcuts inside viewer container
   useEffect(() => {
@@ -88,14 +88,6 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
     };
   }, []);
 
-  // Memoize the file prop: react-pdf/pdf.js transfers (detaches) the ArrayBuffer
-  // to its worker on load, so a fresh { data: fileData } object literal on every
-  // render would make it try to reload an already-detached buffer and crash.
-  const fileProp = useMemo(
-    () => (fileData ? { data: fileData } : undefined),
-    [fileData]
-  );
-
   if (!PDFComponents) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-slate-800 gap-3 w-full">
@@ -120,7 +112,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }
 
       <div className="w-full">
         <Document
-          file={fileProp}
+          file={fileUrl ?? undefined}
           onLoadSuccess={onLoadSuccess}
           loading={
             <div className="flex flex-col items-center justify-center p-12 text-slate-800 gap-3 w-full">
