@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-type PaymentMethod = 'iq' | 'int';
+export type PaymentMethod = 'zain_cash' | 'switch_card';
 
 type SubscriptionContextValue = {
   isSubscribed: boolean;
@@ -22,7 +22,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('iq');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('zain_cash');
 
   useEffect(() => {
     if (accessToken) sessionStorage.setItem('endoholic:book-access-token', accessToken);

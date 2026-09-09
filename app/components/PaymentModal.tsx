@@ -4,10 +4,21 @@ import { FormEvent, useState } from 'react';
 import { useSubscription } from '../context/SubscriptionContext';
 
 const WHATSAPP_NUMBER = '9647732746321';
+const CONTACT_EMAIL = 'duaa0safaa@gmail.com';
 
-function whatsappPayLink(methodLabel: string, orderNumber: string) {
-  const message = `مرحباً، أريد شراء كتاب Safe Instrumentation in Endodontics. رقم الطلب: ${orderNumber}. سأدفع عبر ${methodLabel}.`;
+function methodLabel(paymentMethod: 'zain_cash' | 'switch_card') {
+  return paymentMethod === 'zain_cash' ? 'Zain Cash (Iraq)' : 'Switch Card / International Card';
+}
+
+function whatsappPayLink(paymentMethod: 'zain_cash' | 'switch_card', orderNumber: string) {
+  const message = `Hello, I purchased Safe Instrumentation in Endodontics. Order: ${orderNumber}. Payment method: ${methodLabel(paymentMethod)}.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+function emailPayLink(paymentMethod: 'zain_cash' | 'switch_card', orderNumber: string) {
+  const subject = `Payment receipt — Safe Instrumentation in Endodontics — ${orderNumber}`;
+  const body = `Order number: ${orderNumber}%0APayment method: ${methodLabel(paymentMethod)}%0A%0AI am attaching my payment receipt.`;
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
 }
 
 export default function PaymentModal() {
@@ -54,20 +65,20 @@ export default function PaymentModal() {
 
         <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 mb-6">
           <button
-            onClick={() => setPaymentMethod('iq')}
+            onClick={() => setPaymentMethod('zain_cash')}
             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              paymentMethod === 'iq' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              paymentMethod === 'zain_cash' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            زين كاش 🇮🇶
+            Inside Iraq — Zain Cash 🇮🇶
           </button>
           <button
-            onClick={() => setPaymentMethod('int')}
+            onClick={() => setPaymentMethod('switch_card')}
             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              paymentMethod === 'int' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              paymentMethod === 'switch_card' ? 'bg-teal-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
-            💳 Switch Card 🌍
+            Outside Iraq — Switch Card / International Card 🌍
           </button>
         </div>
 
@@ -75,13 +86,14 @@ export default function PaymentModal() {
           <div className="space-y-4">
             <p className="text-sm text-emerald-300">Order created: <strong>{order.orderNumber}</strong></p>
             <p className="text-xs text-slate-300">Complete payment, then send the receipt through WhatsApp. Your download will unlock after verification.</p>
-            <a href={whatsappPayLink(paymentMethod === 'iq' ? 'Zain Cash' : 'Switch Card', order.orderNumber)} target="_blank" rel="noopener noreferrer" className="block text-center bg-teal-600 hover:bg-teal-500 rounded-xl py-3.5 text-sm font-bold">Send payment notice on WhatsApp</a>
+            <a href={whatsappPayLink(paymentMethod, order.orderNumber)} target="_blank" rel="noopener noreferrer" className="block text-center bg-teal-600 hover:bg-teal-500 rounded-xl py-3.5 text-sm font-bold">Send receipt on WhatsApp</a>
+            <a href={emailPayLink(paymentMethod, order.orderNumber)} className="block text-center bg-slate-700 hover:bg-slate-600 rounded-xl py-3 text-sm font-bold">Send receipt by email</a>
           </div>
-        ) : paymentMethod === 'iq' ? (
+        ) : paymentMethod === 'zain_cash' ? (
           <div className="space-y-4">
             <p className="text-[11px] text-amber-300/90 text-center font-semibold">للعملاء داخل العراق 🇮🇶</p>
             <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
-              <p className="text-xs text-slate-400">رقم محفظة زين كاش:</p>
+              <p className="text-xs text-slate-400">Zain Cash wallet number:</p>
               <p className="text-lg font-mono font-bold text-teal-300 my-1">07732746321</p>
             </div>
             <a
@@ -92,14 +104,14 @@ export default function PaymentModal() {
               ادفع الآن عبر زين كاش 💸
             </a>
             <p className="text-[11px] text-slate-500 text-center leading-relaxed">
-              يفتح واتساب مباشرة لإرسال إشعار الدفع وتفعيل الاشتراك فوراً.
+              After payment, create your order and send the receipt by WhatsApp or email.
             </p>
           </div>
         ) : (
           <div className="space-y-4">
             <p className="text-[11px] text-amber-300/90 text-center font-semibold">للعملاء الدوليين 🌍</p>
             <div className="bg-slate-800/80 p-3 rounded-xl border border-teal-500/30 text-center">
-              <p className="text-xs text-slate-400">رقم حساب Switch Card:</p>
+              <p className="text-xs text-slate-400">Switch Card / international transfer details:</p>
               <p className="text-lg font-mono font-bold text-teal-300 my-1 break-all">0000001A00679084325309</p>
             </div>
             <a
@@ -110,13 +122,13 @@ export default function PaymentModal() {
               ادفع الآن عبر Switch Card 💳
             </a>
             <p className="text-[11px] text-slate-500 text-center leading-relaxed">
-              يفتح واتساب مباشرة لإرسال إشعار الدفع وتفعيل الاشتراك فوراً.
+              After payment, create your order and send the receipt by WhatsApp or email.
             </p>
           </div>
         )}
 
         {error && <p className="text-xs text-rose-300 mb-3">{error}</p>}
-        {!order && <button type="submit" disabled={isSubmitting} className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 rounded-xl py-3 font-bold text-sm">{isSubmitting ? 'Creating order...' : 'Create order'}</button>}
+        {!order && <button form="book-checkout-form" type="submit" disabled={isSubmitting} className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 rounded-xl py-3 font-bold text-sm">{isSubmitting ? 'Creating order...' : `Create ${methodLabel(paymentMethod)} order`}</button>}
         <div className="flex gap-3 pt-6 mt-4 border-t border-slate-800">
           <button
             onClick={() => setShowPaymentModal(false)}
