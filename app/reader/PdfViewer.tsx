@@ -12,7 +12,6 @@ type Props = {
 
 export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkIdentity, className }: Props) {
   const [PDFComponents, setPDFComponents] = useState<any>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pageWidth, setPageWidth] = useState<number>();
   const watermark = useMemo(() => {
     const ts = new Date().toLocaleString();
@@ -53,31 +52,6 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
     })();
     return () => { mounted = false; };
   }, []);
-
-  // Use a Blob URL so react-pdf cannot detach a reusable ArrayBuffer.
-  useEffect(() => {
-    let mounted = true;
-    let objectUrl: string | null = null;
-    (async () => {
-      try {
-        if (typeof file === 'string') {
-          const res = await fetch(file);
-          if (!res.ok) throw new Error(`PDF request failed with ${res.status}`);
-          objectUrl = URL.createObjectURL(await res.blob());
-          if (mounted) setFileUrl(objectUrl);
-        } else if (file instanceof File) {
-          objectUrl = URL.createObjectURL(file);
-          if (mounted) setFileUrl(objectUrl);
-        }
-      } catch (err) {
-        console.error('Failed to fetch PDF file into memory', err);
-      }
-    })();
-    return () => {
-      mounted = false;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [file]);
 
   // Prevent copy, selection and common shortcuts inside viewer container
   useEffect(() => {
@@ -129,7 +103,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
 
       <div className="w-full">
         <Document
-          file={fileUrl ?? undefined}
+          file={file}
           onLoadSuccess={onLoadSuccess}
           loading={
             <div className="flex flex-col items-center justify-center p-12 text-slate-800 gap-3 w-full">
