@@ -45,7 +45,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
       try {
         const mod = await import('react-pdf');
         const { Document, Page, pdfjs } = mod as any;
-        pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
         if (mounted) setPDFComponents({ Document, Page });
       } catch (err) {
         console.error('Failed to load react-pdf in PdfViewer', err);
