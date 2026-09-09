@@ -9,12 +9,16 @@ export async function GET(request: Request) {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('book_orders')
-      .select('status')
+      .select('status, order_number, email')
       .eq('order_token', token)
       .maybeSingle();
 
     if (error) throw error;
-    return NextResponse.json({ status: data?.status || 'unknown' });
+    return NextResponse.json({
+      status: data?.status || 'unknown',
+      orderNumber: data?.order_number || null,
+      email: data?.email || null,
+    });
   } catch (error) {
     console.error('Failed to check order status', error);
     return NextResponse.json({ error: 'Order status is unavailable' }, { status: 503 });

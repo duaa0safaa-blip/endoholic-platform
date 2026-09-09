@@ -1,24 +1,25 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 
 type Props = {
   file: string | File;
   pageNumber: number;
   onLoadSuccess: (arg: any) => void;
+  watermarkIdentity?: string;
   className?: string;
 };
 
-export default function PdfViewer({ file, pageNumber, onLoadSuccess, className }: Props) {
+export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkIdentity, className }: Props) {
   const [PDFComponents, setPDFComponents] = useState<any>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [watermark] = useState<string>(() => {
+  const watermark = useMemo(() => {
     const ts = new Date().toLocaleString();
     const ua = typeof navigator !== 'undefined'
       ? navigator.userAgent.split(' ').slice(0, 3).join(' ')
       : 'web';
-    return `Endoholic — ${ts} — ${ua}`;
-  });
+    return `${watermarkIdentity ? `${watermarkIdentity} — ` : ''}Endoholic — ${ts} — ${ua}`;
+  }, [watermarkIdentity]);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Dynamically load react-pdf (client-only) and configure worker

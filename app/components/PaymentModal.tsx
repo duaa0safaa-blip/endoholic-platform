@@ -22,7 +22,7 @@ function emailPayLink(paymentMethod: 'zain_cash' | 'switch_card', orderNumber: s
 }
 
 export default function PaymentModal() {
-  const { showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod, setAccessToken } = useSubscription();
+  const { showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod, setAccessToken, setOrderIdentity } = useSubscription();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [order, setOrder] = useState<{ orderNumber: string; orderToken: string; manualOnly?: boolean } | null>(null);
@@ -44,6 +44,7 @@ export default function PaymentModal() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Unable to create order');
       setAccessToken(result.orderToken);
+      setOrderIdentity({ orderNumber: result.orderNumber, email });
       setOrder(result);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Unable to create order');

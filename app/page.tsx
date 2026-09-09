@@ -8,7 +8,7 @@ import { useSubscription } from './context/SubscriptionContext';
 const PdfViewer = dynamic(() => import('./reader/PdfViewer'), { ssr: false });
 
 export default function BookReader() {
-  const { isSubscribed, accessToken, setShowPaymentModal } = useSubscription();
+  const { isSubscribed, accessToken, orderIdentity, setShowPaymentModal } = useSubscription();
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
@@ -100,6 +100,7 @@ export default function BookReader() {
               file={pdfFile}
               pageNumber={pageNumber}
               onLoadSuccess={onDocumentLoadSuccess}
+              watermarkIdentity={isSubscribed && orderIdentity ? `Order ${orderIdentity.orderNumber} — ${orderIdentity.email}` : undefined}
               className="shadow-lg rounded"
             />
           </div>
