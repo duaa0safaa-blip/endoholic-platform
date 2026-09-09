@@ -22,9 +22,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Name, email, and a valid payment method are required' }, { status: 400 });
   }
 
+  const orderToken = randomUUID();
+  const localOrderNumber = `ENDO-${orderToken.replaceAll('-', '').slice(0, 8).toUpperCase()}`;
+
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({
+      orderNumber: localOrderNumber,
+      orderToken,
+      amountUsd: PRICE_USD,
+      manualOnly: true,
+    });
+  }
+
   try {
     const supabase = getSupabaseAdmin();
-    const orderToken = randomUUID();
     const { data, error } = await supabase
       .from('book_orders')
       .insert({

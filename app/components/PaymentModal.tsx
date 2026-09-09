@@ -25,7 +25,7 @@ export default function PaymentModal() {
   const { showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod, setAccessToken } = useSubscription();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [order, setOrder] = useState<{ orderNumber: string; orderToken: string } | null>(null);
+  const [order, setOrder] = useState<{ orderNumber: string; orderToken: string; manualOnly?: boolean } | null>(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -85,7 +85,8 @@ export default function PaymentModal() {
         {order ? (
           <div className="space-y-4">
             <p className="text-sm text-emerald-300">Order created: <strong>{order.orderNumber}</strong></p>
-            <p className="text-xs text-slate-300">Complete payment, then send the receipt through WhatsApp. Your download will unlock after verification.</p>
+            <p className="text-xs text-slate-300">Complete payment, then send the receipt through WhatsApp or email. Your download will unlock after manual verification.</p>
+            {order.manualOnly && <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-xs text-amber-200">Your order reference was created for manual checkout. Send the receipt now so it can be verified.</p>}
             <a href={whatsappPayLink(paymentMethod, order.orderNumber)} target="_blank" rel="noopener noreferrer" className="block text-center bg-teal-600 hover:bg-teal-500 rounded-xl py-3.5 text-sm font-bold">Send receipt on WhatsApp</a>
             <a href={emailPayLink(paymentMethod, order.orderNumber)} className="block text-center bg-slate-700 hover:bg-slate-600 rounded-xl py-3 text-sm font-bold">Send receipt by email</a>
           </div>
