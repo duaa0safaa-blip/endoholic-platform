@@ -6,7 +6,8 @@ type PaymentMethod = 'iq' | 'int';
 
 type SubscriptionContextValue = {
   isSubscribed: boolean;
-  setIsSubscribed: (value: boolean) => void;
+  accessToken: string | null;
+  setAccessToken: (value: string | null) => void;
   showPaymentModal: boolean;
   setShowPaymentModal: (value: boolean) => void;
   paymentMethod: PaymentMethod;
@@ -16,30 +17,43 @@ type SubscriptionContextValue = {
 const SubscriptionContext = createContext<SubscriptionContextValue | null>(null);
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
+  const [accessToken, setAccessToken] = useState<string | null>(() =>
+    typeof window === 'undefined' ? null : sessionStorage.getItem('endoholic:book-access-token'),
+  );
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('iq');
 
-  // Persist subscription in localStorage so access survives refresh
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('endoholic:isSubscribed');
-      if (stored === 'true') setIsSubscribed(true);
-    } catch (e) {
-      // ignore (SSR safety)
-    }
-  }, []);
+    if (accessToken) sessionStorage.setItem('endoholic:book-access-token', accessToken);
+    else sessionStorage.removeItem('endoholic:book-access-token');
+  }, [accessToken]);
 
   useEffect(() => {
-    try {
-      if (isSubscribed) localStorage.setItem('endoholic:isSubscribed', 'true');
-      else localStorage.removeItem('endoholic:isSubscribed');
-    } catch (e) {}
-  }, [isSubscribed]);
+    if (!accessToken) {
+      return;
+    }
+
+    let cancelled = false;
+    const checkStatus = async () => {
+      const response = await fetch(`/api/orders/status?token=${encodeURIComponent(accessToken)}`);
+      if (response.ok) {
+        const result = await response.json();
+        if (!cancelled) setIsSubscribed(result.status === 'verified');
+      }
+    };
+
+    void checkStatus();
+    const interval = window.setInterval(checkStatus, 15_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [accessToken]);
 
   return (
     <SubscriptionContext.Provider
-      value={{ isSubscribed, setIsSubscribed, showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod }}
+      value={{ isSubscribed, accessToken, setAccessToken, showPaymentModal, setShowPaymentModal, paymentMethod, setPaymentMethod }}
     >
       {children}
     </SubscriptionContext.Provider>

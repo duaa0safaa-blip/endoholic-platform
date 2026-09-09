@@ -8,16 +8,16 @@ import { useSubscription } from './context/SubscriptionContext';
 const PdfViewer = dynamic(() => import('./reader/PdfViewer'), { ssr: false });
 
 export default function BookReader() {
-  const { isSubscribed, setShowPaymentModal } = useSubscription();
+  const { isSubscribed, accessToken, setShowPaymentModal } = useSubscription();
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   // Served through our own cached proxy (see app/api/book/route.ts) instead of
   // hitting GitHub directly from every visitor's browser.
-  const samplePdf = '/api/book';
+  const samplePdf = accessToken ? `/api/download?token=${encodeURIComponent(accessToken)}` : '/api/book';
 
-  const [pdfFile] = useState<string | File>(samplePdf);
-  const [fileName] = useState<string>('Endodontics Safe Instrumentation (Sample Preview).pdf');
+  const pdfFile = samplePdf;
+  const [fileName] = useState<string>('Safe Instrumentation in Endodontics.pdf');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,10 +57,10 @@ export default function BookReader() {
       <section className="w-full max-w-7xl mx-auto px-4 py-6 z-10 hidden md:block">
         <div className="bg-slate-900/60 border border-white/6 rounded-2xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-center gap-4 sm:gap-6">
           <div className="flex-1">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">Endodontics education for clinicians and students</h2>
-            <p className="text-slate-300 mt-2 sm:mt-3 max-w-2xl text-sm sm:text-base">Practical courses, peer-reviewed resources, and a curated library designed to help you deliver better endodontic care.</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">Safe Instrumentation in Endodontics</h2>
+            <p className="text-slate-300 mt-2 sm:mt-3 max-w-2xl text-sm sm:text-base">A practical clinical guide to safer access, canal instrumentation, and predictable endodontic treatment decisions for clinicians and students.</p>
             <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
-              <a href="/pricing" className="inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold px-4 sm:px-5 py-2 sm:py-3 rounded-lg text-sm">Get Started</a>
+              <button onClick={() => setShowPaymentModal(true)} className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 sm:px-5 py-2 sm:py-3 rounded-lg text-sm">Buy the book — $19</button>
               <a href="/about" className="inline-block text-slate-200 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-white/10 text-sm">Learn more</a>
             </div>
           </div>

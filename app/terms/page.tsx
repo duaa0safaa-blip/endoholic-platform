@@ -12,27 +12,27 @@ export default function TermsPage(){
       <div className="space-y-8 text-slate-300 text-sm leading-relaxed">
         <section>
           <h2 className="text-lg font-semibold text-white mb-2">1. Acceptance of Terms</h2>
-          <p>By accessing or using Endoholic ("the Platform"), you agree to these Terms of Service. If you do not agree, please do not use the Platform.</p>
+          <p>By accessing or using Endoholic (&quot;the Platform&quot;), you agree to these Terms of Service. If you do not agree, please do not use the Platform.</p>
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-white mb-2">2. Sample Access & Subscriptions</h2>
-          <p>Unregistered visitors may preview a limited sample (up to 3 pages) of available books. Full access requires an active subscription, activated after payment is received and manually verified. Subscription pricing and plans are described on our <a href="/pricing" className="text-teal-300 hover:underline">Pricing page</a> and may change from time to time.</p>
+          <h2 className="text-lg font-semibold text-white mb-2">2. Book Access</h2>
+          <p>Visitors may preview the first three pages of Safe Instrumentation in Endodontics. Full PDF access is released after the $19 payment is received and manually verified. Details are described on our <a href="/pricing" className="text-teal-300 hover:underline">book purchase page</a>.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-2">3. Payments & Refunds</h2>
-          <p>Domestic payments are currently handled manually via mobile-wallet transfer and reviewed before activation; please allow a short period for verification. If a payment is made in error or a subscription was not activated as expected, contact us and we will review the situation in good faith. International card payments are not yet available.</p>
+          <p>Payments are handled manually through Zain Cash or Switch Card and reviewed before download access is released. If a payment is made in error or access is not released as expected, contact us and we will review the situation in good faith.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-2">4. Acceptable Use</h2>
-          <p>Content on the Platform is provided for personal educational use only. You agree not to copy, redistribute, resell, or publicly share book or course content, and not to attempt to circumvent content-protection measures (such as watermarking or copy/print restrictions).</p>
+          <p>The book is provided for personal use only. You agree not to copy, redistribute, resell, or publicly share the PDF, and not to attempt to circumvent content-protection measures.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-2">5. Intellectual Property</h2>
-          <p>All books, articles, courses, and other materials made available on the Platform remain the property of their respective authors, publishers, or rights holders, and are licensed to Endoholic users for personal viewing only, not ownership or redistribution.</p>
+          <p>Safe Instrumentation in Endodontics remains the property of its author and rights holders. Purchase grants personal access, not ownership or redistribution rights.</p>
         </section>
 
         <section>
@@ -42,7 +42,7 @@ export default function TermsPage(){
 
         <section>
           <h2 className="text-lg font-semibold text-white mb-2">7. Limitation of Liability</h2>
-          <p>The Platform is provided "as is" without warranties of any kind. To the fullest extent permitted by law, Endoholic is not liable for indirect, incidental, or consequential damages arising from use of the Platform.</p>
+          <p>The Platform is provided &quot;as is&quot; without warranties of any kind. To the fullest extent permitted by law, Endoholic is not liable for indirect, incidental, or consequential damages arising from use of the Platform.</p>
         </section>
 
         <section>

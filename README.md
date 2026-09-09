@@ -29,6 +29,22 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Book checkout configuration
+
+The site sells **Safe Instrumentation in Endodontics** for $19 through manual Zain Cash or Switch Card payment. The SQL schema is in `supabase/book-orders.sql`.
+
+Set these server-only environment variables in the deployment:
+
+```env
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+ORDER_ADMIN_SECRET=
+BOOK_STORAGE_BUCKET=books
+BOOK_STORAGE_PATH=safe-instrumentation-in-endodontics.pdf
+```
+
+Upload the full PDF to the private `books` Supabase Storage bucket. Verify an order with `PATCH /api/admin/orders/{orderNumber}` and the `x-admin-secret` header.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
