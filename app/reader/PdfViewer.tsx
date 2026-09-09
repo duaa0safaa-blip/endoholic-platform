@@ -13,6 +13,7 @@ type Props = {
 export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkIdentity, className }: Props) {
   const [PDFComponents, setPDFComponents] = useState<any>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [pageWidth, setPageWidth] = useState<number>();
   const watermark = useMemo(() => {
     const ts = new Date().toLocaleString();
     const ua = typeof navigator !== 'undefined'
@@ -21,6 +22,21 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
     return `${watermarkIdentity ? `${watermarkIdentity} — ` : ''}Endoholic — ${ts} — ${ua}`;
   }, [watermarkIdentity]);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    const updateWidth = () => {
+      const availableWidth = element.clientWidth;
+      if (availableWidth > 0) setPageWidth(Math.max(240, availableWidth - 16));
+    };
+
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [PDFComponents]);
 
   // Dynamically load react-pdf (client-only) and configure worker
   useEffect(() => {
@@ -101,11 +117,11 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
   const { Document, Page } = PDFComponents;
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="relative w-full min-w-0 overflow-hidden">
       {/* Watermark overlay */}
       <div aria-hidden className="pointer-events-none select-none absolute inset-0 z-40 overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div style={{transform:'rotate(-20deg)', opacity:0.06}} className="text-6xl font-extrabold text-white/90 tracking-wider">
+          <div style={{ transform: 'rotate(-20deg)', opacity: 0.06 }} className="max-w-full break-words px-4 text-center text-2xl sm:text-6xl font-extrabold text-white/90 tracking-wider">
             {watermark}
           </div>
         </div>
@@ -125,6 +141,7 @@ export default function PdfViewer({ file, pageNumber, onLoadSuccess, watermarkId
         >
           <Page
             pageNumber={pageNumber}
+            width={pageWidth}
             renderTextLayer={false}
             renderAnnotationLayer={false}
             className={className}

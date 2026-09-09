@@ -80,7 +80,7 @@ export default function BookReader() {
 
       <div className="flex-1 flex flex-col w-full px-2 sm:px-4 py-4 sm:py-6 gap-4 z-10 justify-center items-center">
 
-        <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-3 sm:p-4 shadow-2xl w-full max-w-2xl">
+        <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-2 sm:p-4 shadow-2xl w-full max-w-2xl min-w-0">
 
           <div className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2 mb-3 flex items-center justify-between text-xs text-slate-300 z-10">
             <span>Book: <strong className="text-teal-300">{fileName}</strong> <span className="text-slate-400">(70 pages)</span></span>
@@ -89,13 +89,13 @@ export default function BookReader() {
             </span>
           </div>
 
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.05] rotate-12 select-none z-20">
-            <p className="text-6xl sm:text-7xl font-black tracking-widest text-white uppercase text-center">
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.05] rotate-0 sm:rotate-12 select-none z-20 overflow-hidden">
+            <p className="max-w-full px-4 text-2xl sm:text-7xl font-black tracking-widest text-white uppercase text-center break-words">
               Endoholic Platform<br/>Protected Content
             </p>
           </div>
 
-          <div className="z-10 bg-white/90 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden flex justify-center p-2 my-2 min-h-[500px] w-full max-w-2xl border border-white/40">
+          <div className="z-10 bg-white/90 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden flex justify-center p-2 my-2 min-h-[500px] w-full max-w-2xl min-w-0 border border-white/40">
             <PdfViewer
               file={pdfFile}
               pageNumber={pageNumber}
