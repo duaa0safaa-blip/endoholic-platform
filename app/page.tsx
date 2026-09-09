@@ -58,7 +58,7 @@ export default function BookReader() {
         <div className="bg-slate-900/60 border border-white/6 rounded-2xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-center gap-4 sm:gap-6">
           <div className="flex-1">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">Safe Instrumentation in Endodontics</h2>
-            <p className="text-slate-300 mt-2 sm:mt-3 max-w-2xl text-sm sm:text-base">A practical clinical guide to safer access, canal instrumentation, and predictable endodontic treatment decisions for clinicians and students.</p>
+            <p className="text-slate-300 mt-2 sm:mt-3 max-w-2xl text-sm sm:text-base">A practical 70-page clinical guide to safer access, canal instrumentation, and predictable endodontic treatment decisions for clinicians and students.</p>
             <div className="mt-4 sm:mt-6 flex gap-2 sm:gap-3">
               <button onClick={() => setShowPaymentModal(true)} className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold px-4 sm:px-5 py-2 sm:py-3 rounded-lg text-sm">Buy the book — $19</button>
               <a href="/about" className="inline-block text-slate-200 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-white/10 text-sm">Learn more</a>
@@ -81,7 +81,7 @@ export default function BookReader() {
         <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/20 rounded-2xl p-3 sm:p-4 shadow-2xl w-full max-w-2xl">
 
           <div className="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-2 mb-3 flex items-center justify-between text-xs text-slate-300 z-10">
-            <span>Book: <strong className="text-teal-300">{fileName}</strong></span>
+            <span>Book: <strong className="text-teal-300">{fileName}</strong> <span className="text-slate-400">(70 pages)</span></span>
             <span className="text-amber-300 font-medium">
               {isSubscribed ? '🟢 Full Version Unlocked' : '🔒 Sample Preview Mode (Max 3 Pages)'}
             </span>

@@ -7,7 +7,7 @@ export default function AboutPage(){
   return (
     <main className="max-w-4xl mx-auto py-12 px-6">
       <h1 className="text-3xl font-bold text-white mb-4">Safe Instrumentation in Endodontics</h1>
-      <p className="text-slate-300 mb-6">A practical digital book for clinicians and students who want a safer, more predictable approach to endodontic instrumentation and treatment decisions.</p>
+      <p className="text-slate-300 mb-6">A practical 70-page digital book for clinicians and students who want a safer, more predictable approach to endodontic instrumentation and treatment decisions.</p>
 
       <section className="bg-slate-800/60 p-6 rounded-xl shadow-soft">
         <h2 className="text-xl font-semibold text-white mb-2">What you will receive</h2>
