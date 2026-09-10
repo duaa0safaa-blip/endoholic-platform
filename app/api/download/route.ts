@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { getSupabaseAdmin } from '../../../lib/supabase/server';
 
-const BOOK_BUCKET = process.env.BOOK_STORAGE_BUCKET || 'books';
 const BOOK_PATH = process.env.BOOK_STORAGE_PATH || 'safe-instrumentation-in-endodontics.pdf';
 
 export async function GET(request: Request) {
@@ -27,12 +28,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Payment has not been verified' }, { status: 403 });
     }
 
-    const { data, error: signedUrlError } = await supabase.storage
-      .from(BOOK_BUCKET)
-      .createSignedUrl(BOOK_PATH, 60 * 15);
-
-    if (signedUrlError) throw signedUrlError;
-    return NextResponse.redirect(data.signedUrl);
+    const book = await readFile(path.join(process.cwd(), 'private', 'books', BOOK_PATH));
+    return new NextResponse(book, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Cache-Control': 'private, no-store, max-age=0',
+        'Content-Disposition': 'inline; filename="safe-instrumentation-in-endodontics.pdf"',
+      },
+    });
   } catch (error) {
     console.error('Failed to create book download', error);
     return NextResponse.json({ error: 'Download is unavailable' }, { status: 503 });
